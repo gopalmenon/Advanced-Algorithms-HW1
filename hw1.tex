@@ -6,7 +6,7 @@
 \usepackage[nodayofweek,level]{datetime}
 \usepackage{color}
 
-\definecolor{qcolor}{gray}{0.3}
+\definecolor{qcolor}{rgb}{0, 0, 0.3}
 \definecolor{acolor}{rgb}{0, 0, 0}
 
 %\input myfonts
@@ -31,17 +31,61 @@ Recall the prefix tree data structure for storing a collection of strings (Lectu
 We saw how to build a data structure that supports the first three operations in time $O(|w|)$, where $|w|$ is the length of the string $w$ being added/deleted/queried. Describe a way to modify the procedures so that COUNT-PREFIX can also be answered in time $O(|w|)$.
 
 \color{acolor}
-A prefix tree is shown below with the words $BED, PET, PAT, PATRON$ and $PATENT$. The root of the tree is denoted by $\circ$. Each node of the tree stores a letter that is part of a word along with a count that denotes the number of words the letter is used in, a marker $\bullet$ when a word ends with the letter and an optional set of pointers to other nodes. A node can have an edge connecting it to another node when the two letters in the nodes are subsequent letters in a word. Although the tree shown does not have directional edges, the edges are to be read as if they were pointing downward. For example, the connected nodes $B, E $ and $D$ after the root show that the word $BED$ has been stored. Each of these letters have a count of $1$ to show that they have been used only in one word and the $\bullet$ after $D$ shows that the word $BED$ end with the node $D$. The letter $P$ has a count of $4$ since it is used in words $PET, PAT, PATRON$ and $PATENT$. There is a $\bullet$ marker on the letter $T$ in the middle of the word $PATENT$ since $PAT$ is also stored in the tree and the two words have the first three letters common. 
-
-For the $QUERY$ operation, a client of the prefix tree will start at the root and look for connected nodes starting with the first letter of the word being queried and ending with the last letter of the word. If the last node also has a $\bullet$ marker, then it means that the word being queried, is present in the tree. So the word $BE$ will not be found in the tree even though nodes $B$ and $E$ exist after the root, but the word $BED$ will be found.
+A prefix tree is shown below with the strings $BED, PET, PAT, PATRON$ and $PATENT$. The root of the tree is denoted by $\circ$. Each node of the tree stores a letter that is part of a string along with a count that denotes the number of strings the letter is used in, a marker $\bullet$ when a string ends with the letter and an optional set of pointers to other nodes. A node can have an edge connecting it to another node when the two letters in the nodes are subsequent letters in a string. Although the tree shown does not have directional edges, the edges are to be read as if they were pointing downward. For example, the connected nodes $B, E $ and $D$ after the root show that the string $BED$ has been stored. Each of these letters have a count of $1$ to show that they have been used only in one string and the $\bullet$ after $D$ shows that the string $BED$ end with the node $D$. The letter $P$ has a count of $4$ since it is used in strings $PET, PAT, PATRON$ and $PATENT$. There is a $\bullet$ marker on the letter $T$ in the middle of the string $PATENT$ since $PAT$ is also stored in the tree and the two strings have the first three letters common. 
 
 \Tree[.$\circ$	[.B^1  [.E^1 [.D^1_{\bullet} ]]]
           		[.P^4 [.E^1 [.T^1_{\bullet} ]]
 			      [.A^3 [.T^3_{\bullet} [.R^1 [.O^1 [.N^1_{\bullet} ]]]
 			      		 [.E^1 [.N^1 [.T^1_{\bullet} ]] ]] ]]]
-               
-                                     
+					 
+\textbf{QUERY procedure algorithm:} For the QUERY operation, a client of the prefix tree will start at the root and look for connected nodes starting with the first letter of the string being queried and ending with the last letter of the string. If the last node also has a $\bullet$ marker, then it means that the string being queried, is present in the tree. So the string $BE$ will not be found in the tree even though nodes $B$ and $E$ exist after the root, but the string $BED$ will be found. 
 
+\textbf{QUERY procedure correctness:} Consider the case where the string being queried does not exist in the tree. This could be because the string exists only as a prefix or does not exist at all. In the former case, although the entire query string is found in the tree, since the last letter of the query string will not have a $\bullet$ marker, the procedure will return a result of not found. In the latter case, the in order connected nodes corresponding to the query string will not be found in the tree and the procedure will return a result of not found. In the case the query string exists in the tree, there will be a set of connected nodes starting from the root that match with the string being queried and with the last node marked with a $\bullet$ marker. In this case the string being queried will be searched in the tree by looking for nodes starting after the root in the order of the letters in the query string and with the last node having a $\bullet$ marker. This will be found and the procedure will return a result of found.
+
+\textbf{QUERY procedure running time:} This operation can be carried out in $O(|w|)$ time since the check can be done by navigating the tree starting at the root in order of the letters in the query string once.
+
+\textbf{ADD procedure algorithm:} To ADD a string into the tree, the client will first $QUERY$ the string and if it is not found, start at the root and for a matching prefix of the string being added, that is already in the tree, it will increment the letter count. If the entire string is found, the last letter will be marked with a $\bullet$. If only a prefix of the string is found, the remaining letters will be added to the tree as connected nodes and letter count $1$ after the last letter of the prefix that was found. The last letter of the added string will be marked with a $\bullet$. The tree is shown below after the strings $BE$ and $BELL$ are added to the tree. 
+
+\Tree[.$\circ$	[.B^2  [.E^2_{\bullet} [.D^1_{\bullet} ]]]
+          		[.P^4 [.E^1 [.T^1_{\bullet} ]]
+			      [.A^3 [.T^3_{\bullet} [.R^1 [.O^1 [.N^1_{\bullet} ]]]
+			      		 [.E^1 [.N^1 [.T^1_{\bullet} ]] ]] ]]]
+
+\Tree[.$\circ$	[.B^3  [.E^3_{\bullet} [.D^1_{\bullet} ]
+				  [.L^1 [.L^1_{\bullet} ] ]]]
+          		[.P^4 [.E^1 [.T^1_{\bullet} ]]
+			      [.A^3 [.T^3_{\bullet} [.R^1 [.O^1 [.N^1_{\bullet} ]]]
+			      		 [.E^1 [.N^1 [.T^1_{\bullet} ]] ]] ]]]
+					 
+\textbf{ADD procedure correctness:} Before a string is added to the tree, there is a check to see if it is already present in the tree. This prevents the string from being added to the tree again and keeps the letter usage counts correct and will ensure that the DELETE operation results in the string being removed from the tree if it is not being used as a prefix. For a prefix of a string being added, that is found in the tree, the letter counts are incremented by $1$. This will ensure that the COUNT-PREFIX operation returns the correct result. For a suffix of a string that is not found in the tree, a new branch will be started after the prefix that is found and connected nodes will be appended in order of the suffix with the last node having a $\bullet$ marker. This will ensure that a QUERY operation will find the string in the tree. If a prefix of the string being added is not found in the tree, connected nodes will be appended to the root node in order of the letters in the string being added. Each of these nodes will have a count of $1$ and the last node will be marked with a $\bullet$. This will ensure that a QUERY operation will find the string in the tree. If the string being added is found as a prefix in the tree, the letter usage counts will be incremented and the node corresponding to the last letter of the string will be marked with a $\bullet$. This will ensure that the COUNT-PREFIX and QUERY operations will return the correct result and the DELETE operation will not corrupt the tree after it decrements the letter counts. 
+
+\textbf{ADD procedure running time:} An ADD operation as described above will take two operations (as a QUERY operation is called as part of the ADD) each with $O(|w|)$ checks and so the entire operation will take time $O(|w|)$.
+
+\textbf{DELETE procedure algorithm:} To DELETE a string from the tree, the client will first QUERY the string and if it is found, start at the root and visit every node in order of the letters in the string. The count for each node will be decremented by $1$ and the $\bullet$ marker will be removed from the node corresponding to the last letter. At the point of decrementing the count, if it becomes $0$, the node will be removed. The tree is shown below after the strings $BED$ and $PAT$ are removed from the tree. 
+
+\Tree[.$\circ$	[.B^2  [.E^2_{\bullet} 
+				  [.L^1 [.L^1_{\bullet} ] ]]]
+          		[.P^4 [.E^1 [.T^1_{\bullet} ]]
+			      [.A^3 [.T^3_{\bullet} [.R^1 [.O^1 [.N^1_{\bullet} ]]]
+			      		 [.E^1 [.N^1 [.T^1_{\bullet} ]] ]] ]]]
+
+\Tree[.$\circ$	[.B^2  [.E^2_{\bullet} 
+				  [.L^1 [.L^1_{\bullet} ] ]]]
+          		[.P^3 [.E^1 [.T^1_{\bullet} ]]
+			      [.A^2 [.T^2 [.R^1 [.O^1 [.N^1_{\bullet} ]]]
+			      		 [.E^1 [.N^1 [.T^1_{\bullet} ]] ]] ]]]
+					 
+\textbf{DELETE procedure correctness:} Due to the count being decremented by $1$ as described above and and the $\bullet$ marker being removed from the node corresponding to the last letter, the COUNT-PREFIX operation will return the correct result and due to the nodes being removed when the decremented count reaches zero, a QUERY operation will return the correct result. Since a QUERY operation is performed before a string is removed through the DELETE operation, the case where a prefix of the string that exists and has usage counts decremented, but the string to be deleted does not exist in the tree, will not arise.
+
+\textbf{DELETE procedure running time:} A DELETE operation will take two operations each with $O(|w|)$ checks and so the entire operation will take time $O(|w|)$.
+					 
+\textbf{COUNT-PREFIX procedure algorithm:} The COUNT-PREFIX operation will start at the root of the tree and visit every node in order of the letters in the string prefix. If it does not find a match for the prefix in the tree, it will return zero. If it finds the entire prefix in the tree, it will return the number associated with the last letter of the prefix in the tree. So in the example of the last tree shown above, a $COUNT-PREFIX$ operation with the prefix as $PA$ will return $2$. This means that the tree has two strings with $PA$ as the prefix. These strings are $PATRON$ and $PATENT$. 
+
+\textbf{COUNT-PREFIX procedure correctness:} The ADD and DELETE procedures keep the letter counts updated correctly as described above. As a result of this, the COUNT-PREFIX returns the correct number. 
+
+\textbf{COUNT-PREFIX procedure running time:} As the COUNT-PREFIX operation looks for a match of the prefix in the tree letter by letter, it can be completed in time $O(|w|)$.
+
+\color{qcolor}
 \titledquestion{Recurrences, recurrences}
 Solve each of the recurrences below, and give the best $O(\cdot)$ bound you can for each of them. [{\em Hint: } You might find chapters 12 and 13 of the Lehman, Leighton book (available from the course homepage) useful.]
 
@@ -49,6 +93,14 @@ Solve each of the recurrences below, and give the best $O(\cdot)$ bound you can 
 \part[3] $T(n) = 2T(\sqrt{n}) + 4$.
 \part[4] $T(n) = T(n/3) + T(n/2) + \sqrt{n}$.
 \part[5] Suppose you have devised a divide-and-conquer algorithm for a certain problem that breaks up a problem of size $n$ into three subproblems of size $n/2$ each, solves them recursively, and then combines the solutions. Suppose the time for breaking up and combination is given by $g(n)$. Suppose in your first attempt, you had a combine step that had $g(n) = n^{1.8}$. Does it make sense to think further and reduce $g(n)$ to $n^{1.5}$? What about reducing it even further to $g(n) = n \log n$? (Assume you only care about the asymptotic running time of the overall procedure.)
+\end{parts}
+
+
+\color{acolor}
+\begin{parts}
+\part
+\part
+\part
 \end{parts}
 
 \titledquestion{Bubble sort}
