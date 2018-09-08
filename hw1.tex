@@ -4,17 +4,16 @@
 \usepackage{graphicx}
 \usepackage{qtree}
 \usepackage[nodayofweek,level]{datetime}
+\usepackage{color}
+
+\definecolor{qcolor}{gray}{0.3}
+\definecolor{acolor}{rgb}{0, 0, 0}
 
 %\input myfonts
 
-\newtheorem*{claim}{Claim}
-\title{CS 6150: HW1 -- Data structures, recurrences, divide and conquer}
-\date{Submission date: Monday, Sep 10, 2018 (11:59 PM)}
-
-
 \lhead{Gopal Menon (u0772360)}
 \chead{\bf{HW1}}
-\rhead{CS 6530 \today}
+\rhead{CS 6150 \today}
 \headrule
 
 \begin{document}
@@ -22,13 +21,26 @@
 \section*{Collaborators}
 
 Ben Nelson and I collaborated for this assignment on all questions except question $2$. We discussed $5c$ in some detail and discussed the rest without going into too many specifics.
-
+\qformat{Question \thequestion: \thequestiontitle\dotfill \textbf{[\totalpoints]}}\pointname{}\bonuspointname{}\pointformat{[\bfseries\thepoints]}
 \begin{questions}
 
+\color{qcolor}
 \titledquestion{Prefix trees revisited}[8]
 Recall the prefix tree data structure for storing a collection of strings (Lecture 2). Suppose we wish to support the following operations: ADD string, DELETE string, QUERY string, COUNT-PREFIX. The last operation takes a string $w$ and returns the number of strings in our collection having $w$ as a prefix.
 
 We saw how to build a data structure that supports the first three operations in time $O(|w|)$, where $|w|$ is the length of the string $w$ being added/deleted/queried. Describe a way to modify the procedures so that COUNT-PREFIX can also be answered in time $O(|w|)$.
+
+\color{acolor}
+A prefix tree is shown below with the words $BED, PET, PAT, PATRON$ and $PATENT$. The root of the tree is denoted by $\circ$. Each node of the tree stores a letter that is part of a word along with a count that denotes the number of words the letter is used in, a marker $\bullet$ when a word ends with the letter and an optional set of pointers to other nodes. A node can have an edge connecting it to another node when the two letters in the nodes are subsequent letters in a word. Although the tree shown does not have directional edges, the edges are to be read as if they were pointing downward. For example, the connected nodes $B, E $ and $D$ after the root show that the word $BED$ has been stored. Each of these letters have a count of $1$ to show that they have been used only in one word and the $\bullet$ after $D$ shows that the word $BED$ end with the node $D$. The letter $P$ has a count of $4$ since it is used in words $PET, PAT, PATRON$ and $PATENT$. There is a $\bullet$ marker on the letter $T$ in the middle of the word $PATENT$ since $PAT$ is also stored in the tree and the two words have the first three letters common. 
+
+For the $QUERY$ operation, a client of the prefix tree will start at the root and look for connected nodes starting with the first letter of the word being queried and ending with the last letter of the word. If the last node also has a $\bullet$ marker, then it means that the word being queried, is present in the tree. So the word $BE$ will not be found in the tree even though nodes $B$ and $E$ exist after the root, but the word $BED$ will be found.
+
+\Tree[.$\circ$	[.B^1  [.E^1 [.D^1_{\bullet} ]]]
+          		[.P^4 [.E^1 [.T^1_{\bullet} ]]
+			      [.A^3 [.T^3_{\bullet} [.R^1 [.O^1 [.N^1_{\bullet} ]]]
+			      		 [.E^1 [.N^1 [.T^1_{\bullet} ]] ]] ]]]
+               
+                                     
 
 \titledquestion{Recurrences, recurrences}
 Solve each of the recurrences below, and give the best $O(\cdot)$ bound you can for each of them. [{\em Hint: } You might find chapters 12 and 13 of the Lehman, Leighton book (available from the course homepage) useful.]
@@ -74,12 +86,5 @@ These observations let us conclude that $T(n) = 5 T(n/3) + O(n)$, which results 
 
 \end{questions}
 
-\Tree[.IP [.NP [.Det \textit{the} ]
-               [.N\1 [.N \textit{package} ]]]
-          [.I\1 [.I \textsc{3sg.Pres} ]
-                [.VP [.V\1 [.V \textit{is} ]
-                           [.AP [.Deg \textit{really} ]
-                                [.A\1 [.A \textit{simple} ]
-                                      \qroof{\textit{to use}}.CP ]]]]]]
 
 \end{document}
