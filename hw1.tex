@@ -1,0 +1,85 @@
+\documentclass[addpoints]{exam}
+\usepackage{url}
+\usepackage{amsmath,amsthm,enumitem}
+\usepackage{graphicx}
+\usepackage{qtree}
+\usepackage[nodayofweek,level]{datetime}
+
+%\input myfonts
+
+\newtheorem*{claim}{Claim}
+\title{CS 6150: HW1 -- Data structures, recurrences, divide and conquer}
+\date{Submission date: Monday, Sep 10, 2018 (11:59 PM)}
+
+
+\lhead{Gopal Menon (u0772360)}
+\chead{\bf{HW1}}
+\rhead{CS 6530 \today}
+\headrule
+
+\begin{document}
+
+\section*{Collaborators}
+
+Ben Nelson and I collaborated for this assignment on all questions except question $2$. We discussed $5c$ in some detail and discussed the rest without going into too many specifics.
+
+\begin{questions}
+
+\titledquestion{Prefix trees revisited}[8]
+Recall the prefix tree data structure for storing a collection of strings (Lecture 2). Suppose we wish to support the following operations: ADD string, DELETE string, QUERY string, COUNT-PREFIX. The last operation takes a string $w$ and returns the number of strings in our collection having $w$ as a prefix.
+
+We saw how to build a data structure that supports the first three operations in time $O(|w|)$, where $|w|$ is the length of the string $w$ being added/deleted/queried. Describe a way to modify the procedures so that COUNT-PREFIX can also be answered in time $O(|w|)$.
+
+\titledquestion{Recurrences, recurrences}
+Solve each of the recurrences below, and give the best $O(\cdot)$ bound you can for each of them. [{\em Hint: } You might find chapters 12 and 13 of the Lehman, Leighton book (available from the course homepage) useful.]
+
+\begin{parts}
+\part[3] $T(n) = 2T(\sqrt{n}) + 4$.
+\part[4] $T(n) = T(n/3) + T(n/2) + \sqrt{n}$.
+\part[5] Suppose you have devised a divide-and-conquer algorithm for a certain problem that breaks up a problem of size $n$ into three subproblems of size $n/2$ each, solves them recursively, and then combines the solutions. Suppose the time for breaking up and combination is given by $g(n)$. Suppose in your first attempt, you had a combine step that had $g(n) = n^{1.8}$. Does it make sense to think further and reduce $g(n)$ to $n^{1.5}$? What about reducing it even further to $g(n) = n \log n$? (Assume you only care about the asymptotic running time of the overall procedure.)
+\end{parts}
+
+\titledquestion{Bubble sort}
+Recall the bubble sort algorithm (pseudocode at {\sf http://en.wikipedia.org/wiki/Bubble\_sort}). Recall that the worst case running time is $O(n^2)$.
+\begin{parts}
+\part[3] Give an example of an input array $A[]$ that is (a) not sorted to begin with, and (b) the algorithm takes time $O(n)$ on $A[]$.
+\part[5] Give an example of an input array on which the algorithm takes time $\Theta(n^{3/2})$.
+\end{parts}
+
+\titledquestion{Pecking orders}
+({\em Source:} Jeff Erickson's exercises)\\
+Whenever groups of pigeons gather, they instinctively establish a pecking order. For any pair of pigeons, one pigeon always pecks the other, driving it away from food or potential mates. The same pair of pigeons always chooses the same pecking order, even after years of separation, no matter what other pigeons are around. Surprisingly, the overall pecking order can contain cycles -- for example, pigeon $A$ pecks pigeon $B$, which pecks pigeon $C$, which pecks pigeon $A$. 
+
+\begin{parts}
+\part[5] Prove that any finite set of pigeons can be arranged in a row from left to right so that every pigeon pecks the pigeon immediately to its left. [\emph{Hint:} start with two piegons, and consider placing the rest one after another.]
+\part[5] Suppose you are given a directed graph representing the pecking relationships among a set of $n$ pigeons. The graph contains one vertex per pigeon, and it contains an edge $i \rightarrow j$ if and only if pigeon $i$ pecks pigeon $j$. Describe and analyze an algorithm to compute a pecking order for the pigeons, as guaranteed by part (a). Your algorithm should run in time polynomial in $n$.
+\end{parts}
+
+\titledquestion{More divide, better run time}
+{\em Moral:} as long as the ``conquer'' step is not too expensive, dividing a problem into smaller sub-problems typically helps. 
+
+Consider the problem of multiplying two $n$-digit integers.  We saw in class (Lecture 3, Karatsuba's algorithm) that dividing into two $n/2$ bit numbers and combining appropriately, we can compute the product in time $O(n^{1.585..})$. So we can wonder: can division into three pieces help?
+
+Suppose we have two $n$-digit integers $A, B$. Split $A$ into $A_1$,  $A_2$ and $A_3$, each having $n/3$ digits (assume $n$ is a power of $3$ for this problem). So also, split $B$ into $B_1, B_2$ and $B_3$. If the numbers are in base 10, we can write $A = 10^{2n/3} A_1 + 10^{n/3} A_2 + A_3$.  Let $p(z)$ be the polynomial $A_1 z^2 + A_2 z + A_3$, and let $q(z) = B_1 z^2 + B_2 z + B_3$.  Define $r(z) = p(z) q(z)$.  The degree of $r(z)$ is $4$, so $r(z) = C_1 z^4 + C_2 z^3 + C_3 z^2 + C_4 z + C_5$, for some coefficients $C_i$.  
+
+\begin{parts}
+\part[2] Observe that the product of $A$ and $B$ is $r(10^{n/3})$.
+\part[2] Observe that once we know the $C_i$, assuming they are $O(n)$ digits each, $r(10^{n/3})$ can be found in $O(n)$ time.
+\part[4] We thus need to find the $C_i$. The trick is to find the values of $r(z)$ at a few {\em small} values of $z$. Specifically, we find $r(z)$ for $z \in \{-2, -1, 0, 1, 2\}$. Show that we can compute each of these $r(z)$ in time $T(n/3) + O(n)$, where $T(n/3)$ is the time needed to multiply two $n/3$ digit numbers.  Explain why these values uniquely determine $C_i$.  [{\em Hint:} use $ r = p \cdot q$, and the degree of $r$.]
+\part[4] To find the $C_i$, write a system of linear equations, and show how these can be solved to obtain $C_i$ in $O(n)$ time.
+
+These observations let us conclude that $T(n) = 5 T(n/3) + O(n)$, which results in an overall run time of $O(n^{1.464..})$, which is better than Karatsuba's algorithm. (This can be pushed further, to obtain $n^{1+\epsilon}$, for any constant $\epsilon >0$.)
+\end{parts}
+
+
+\end{questions}
+
+\Tree[.IP [.NP [.Det \textit{the} ]
+               [.N\1 [.N \textit{package} ]]]
+          [.I\1 [.I \textsc{3sg.Pres} ]
+                [.VP [.V\1 [.V \textit{is} ]
+                           [.AP [.Deg \textit{really} ]
+                                [.A\1 [.A \textit{simple} ]
+                                      \qroof{\textit{to use}}.CP ]]]]]]
+
+\end{document}
