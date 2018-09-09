@@ -5,6 +5,7 @@
 \usepackage{qtree}
 \usepackage[nodayofweek,level]{datetime}
 \usepackage{color}
+\usepackage{csquotes}
 
 \definecolor{qcolor}{rgb}{0, 0, 0.3}
 \definecolor{acolor}{rgb}{0, 0, 0}
@@ -150,6 +151,10 @@ So by the Master Theorem, $T(n) = \Theta(n^{1.585})$\\
 So it does make sense to reduce $g(n)$ to $n^{1.5}$\\
 
 If we reduce $g(n)$ to $n \log n$\\
+$g(n)= n\log n$ is upper bounded by $n^{log_b a} = n^{log_2 3} =n^{1.585}$, since $\log n$ is upper bounded by $n^{0.585}$.\\
+So we can find an $\epsilon > 0$ such that $g(n) =O(n^{\log_b a-\epsilon})$.
+So by case 1 of the Master Method, $T(n) = O(n{\log_b a}) = O(n^{1.585})$.
+This does not give us an advantage over when $g(n)=n^{1.5}$.
 \end{parts}
 
 \titledquestion{Bubble sort}
@@ -189,7 +194,7 @@ These observations let us conclude that $T(n) = 5 T(n/3) + O(n)$, which results 
 
 \begin{thebibliography}{9}
 
-\bibitem{CLRS} Cormen, T. H., Leiserson, C. E., Rivest, R. L., \& Stein, C. (n.d.).\textit{Introduction to algorithms.}
+\bibitem{CLRS} \enquote{4.5 The master method for solving recurrences.} \textit{Introduction to Algorithms}, by Thomas H. Cormen et al., Mit Press, 2009, pp. 94-94.
 
 \end{thebibliography}
 
