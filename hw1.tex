@@ -157,11 +157,35 @@ So by case 1 of the Master Method, $T(n) = O(n{\log_b a}) = O(n^{1.585})$.
 This does not give us an advantage over when $g(n)=n^{1.5}$.
 \end{parts}
 
+\color{qcolor}
 \titledquestion{Bubble sort}
 Recall the bubble sort algorithm (pseudocode at {\sf http://en.wikipedia.org/wiki/Bubble\_sort}). Recall that the worst case running time is $O(n^2)$.
 \begin{parts}
 \part[3] Give an example of an input array $A[]$ that is (a) not sorted to begin with, and (b) the algorithm takes time $O(n)$ on $A[]$.
 \part[5] Give an example of an input array on which the algorithm takes time $\Theta(n^{3/2})$.
+\end{parts}
+
+\color{acolor}
+\begin{parts}
+\part Consider the case on an array where only the last element is out of place and everything else is sorted. Specifically, the last element is greater than the element two places before it, but less than the element just before it. The algorithm will scan the array from the beginning and will not swap any element till it comes to the last element. When it comes to the last element, it will swap it with the previous element. It will then scan the entire array except the last element, will not find anything to swap and will terminate. It will thus make two scans through the array and will take $O(2n)=O(n)$ time, where $n$ is the number of elements in the array. Consider the following example to illustrate this:
+\begin{equation*}
+\begin{aligned}
+A &= \{21, 27,33,56,65,77,79,83,88,101,95\} \text{, is the initial state of the array}\\
+A &= \{21, 27,33,56,65,77,79,83,88,95,101\} \text{, state of the array after last two elements have been swapped}\\
+A &= \{21, 27,33,56,65,77,79,83,88,95,101\} \text{, unchanged state of the array after ino more swaps are needed}\\
+\end{aligned}
+\end{equation*}
+
+\part Consider the case on an array with $n$ elements where the entire array except the last $\sqrt{n}$ elements are sorted and the last $\sqrt{n}$ elements are larger than then elements before them. The bubble sort algorithm will first scan the entire array and swap required elements in the last $\sqrt{n}$ part. Then it will scan the array up to the last but one element, then up to the last but two elements, and so on till element number $n-\sqrt{n}$. It will then stop. The number of elements scanned will be:
+\begin{equation*}
+\begin{aligned}
+\text{Number of elements scanned} &= \text{Sum of numbers $1$ through $n$} -\text{Sum of numbers $1$ though $n-\sqrt{n}$} \\
+&= \frac{n(n+1)}{2}-\frac{(n-\sqrt{n})(n-\sqrt{n}+1)}{2}\\
+&=\Theta(n\sqrt(n))\\
+&= \Theta(n^{\frac{3}{2}})
+\end{aligned}
+\end{equation*}
+
 \end{parts}
 
 \titledquestion{Pecking orders}
