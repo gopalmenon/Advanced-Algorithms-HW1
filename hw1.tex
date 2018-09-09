@@ -134,7 +134,22 @@ T(n) &= \Theta(n^x) \text{, where } 0.631 \leq x \leq 1\\
 \text{So }T(n) &= O(n) \text{ is the tightest upper bound I can find}
 \end{aligned}
 \end{equation*}
-\part 
+
+\part $T(n) = 3T(\frac{n}{2}) + g(n)$\\
+For the first attempt $g(n) = n^{1.8}$\\
+Using the Master Theorem, $a=3$, $b=2$, $log_b a = log_2 3 =1.585$\\
+$f(n) = g(n) = n^{1.8} = \Omega(n^{1.8})=\Omega(n^{log_b a + \epsilon})$\\
+$af(\frac{n}{b}) = 3\left ( \frac{n}{2} \right ) ^{1.8}=0.8615n^{1.8}$\\
+$cf(n) = cn^{1.8}$\\
+When $c=1$, $af(\frac{n}{b}) \leq cf(n)$\\
+So by the Master Theorem, $T(n) = \Theta(n^{1.8})$\\
+
+If we reduce $g(n)$ to $n^{1.5}$\\
+$f(n) =  O(n^{1.5})=O(n^{log_b a - \epsilon})$\\
+So by the Master Theorem, $T(n) = \Theta(n^{1.585})$\\
+So it does make sense to reduce $g(n)$ to $n^{1.5}$\\
+
+If we reduce $g(n)$ to $n \log n$\\
 \end{parts}
 
 \titledquestion{Bubble sort}
