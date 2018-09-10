@@ -8,6 +8,7 @@
 \usepackage{csquotes}
 \usepackage{pgf, tikz}
 \usetikzlibrary{arrows, automata}
+\usepackage{algorithm,algpseudocode}
 
 \definecolor{qcolor}{rgb}{0, 0, 0.3}
 \definecolor{acolor}{rgb}{0, 0, 0}
@@ -201,7 +202,9 @@ Whenever groups of pigeons gather, they instinctively establish a pecking order.
 \end{parts}
 
 \color{acolor}
-If we pick any two pigeons, they can be arranged left to right so that a pigeon pecks the pigeon immediately to its left. This is shown below for pigeons $a$ and $b$ with the arrow pointing to the pigeon being pecked.
+
+\begin{parts}
+\part If we pick any two pigeons, they can be arranged left to right so that a pigeon pecks the pigeon immediately to its left. This is shown below for pigeons $a$ and $b$ with the arrow pointing to the pigeon being pecked.
 
 \begin{center}
   \begin{tikzpicture}[
@@ -431,7 +434,13 @@ For each of these four cases, the new pigeon can be inserted into the row as sho
   \end{tikzpicture}
 \end{center}
 
-As a general rule, every pigeon that needs to be inserted into the pecking order list, can be inserted before the first pigeon it pecks, starting from the rightmost pigeon already in the list. In the case where the pigeon that needs to be inserted into the pecking order list is pecked by every pigeon in the list, the pigeon can be inserted at the end of the list. This is shown below for pigeon $y$ being inserted into a list of three pigeons $a$, $b$ and $c$ and also for a list of four pigeons $a$, $b$, $c$ and $d$. The rule however will hold for any pecking order list size.
+As a general rule, every pigeon that needs to be inserted into the pecking order list, can be inserted before (to the right of) the first pigeon it pecks, starting from the rightmost pigeon already in the list. Since the newly inserted pigeon pecks the pigeon it is inserted before, it does not violate the rule of the pecking order. If the newly inserted pigeon is inserted before the first pigeon in the list, then we do not have to worry about any pigeon to the right of the insertion point. If the newly inserted pigeon is not inserted before the first pigeon in the list, then it would have been inserted at that point because the pigeon to its right would have pecked it. So again it does not violate the rule of the pecking order
+
+In the case where the pigeon that needs to be inserted into the pecking order list is pecked by every pigeon in the list, the pigeon can be inserted at the end of the list. Again this insertion point does not violate the rule of the pecking order.
+
+So this algorithm is correct.
+
+This is shown below for pigeon $y$ being inserted into a list of three pigeons $a$, $b$ and $c$ and also for a list of four pigeons $a$, $b$, $c$ and $d$. The rule however will hold for any pecking order list size.
 
 \begin{center}
   \begin{tikzpicture}[
@@ -934,6 +943,39 @@ As a general rule, every pigeon that needs to be inserted into the pecking order
 
   \end{tikzpicture}
 \end{center}
+
+\part We can assume that the directed graph is stored as an adjacency list with every node for a pigeon containing a list of other pigeons it pecks. This list does not have to be sorted. The pecking order for the pigeons can be stored as a linked list with the pigeon being pecked pointed to by the pecking pigeon. Here is the algorithm for a pecking order list for the pigeons.
+
+\let\oldReturn\Return
+\renewcommand{\Return}{\State\oldReturn}
+
+\begin{minipage}{\linewidth}
+  \begin{algorithm}[H]
+    \caption{Pecking Order List Algorithm}\label{AlgPeck}
+    \begin{algorithmic}[1]
+      \Procedure{PeckingOrderListAlgorithm}{Pecking Order Relationship Graph}
+      	\State Create empty Pecking Order List
+	\While {there are more nodes in directed graph}
+		\State Get next node
+		\If {pecking order list is empty}
+			\State Add new node to the list
+		\Else
+			\State Look for first node in list pecked by new node
+			\If {found}
+				\State Insert new node to the right of the pecked node found
+			\Else
+				\State Insert new node at the left end of the list
+			\EndIf
+		\EndIf
+	\EndWhile
+	\Return Pecking Order List
+      \EndProcedure
+    \end{algorithmic}
+  \end{algorithm}
+\end{minipage}\\\\
+
+\end{parts}
+
 \color{qcolor}
 \titledquestion{More divide, better run time}
 {\em Moral:} as long as the ``conquer'' step is not too expensive, dividing a problem into smaller sub-problems typically helps. 
