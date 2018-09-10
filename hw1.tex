@@ -6,6 +6,8 @@
 \usepackage[nodayofweek,level]{datetime}
 \usepackage{color}
 \usepackage{csquotes}
+\usepackage{pgf, tikz}
+\usetikzlibrary{arrows, automata}
 
 \definecolor{qcolor}{rgb}{0, 0, 0.3}
 \definecolor{acolor}{rgb}{0, 0, 0}
@@ -179,15 +181,16 @@ A &= \{21, 27,33,56,65,77,79,83,88,95,101\} \text{, unchanged state of the array
 \part Consider the case on an array with $n$ elements where the entire array except the last $\sqrt{n}$ elements are sorted and the last $\sqrt{n}$ elements are larger than then elements before them. The bubble sort algorithm will first scan the entire array and swap required elements in the last $\sqrt{n}$ part. Then it will scan the array up to the last but one element, then up to the last but two elements, and so on till element number $n-\sqrt{n}$. It will then stop. The number of elements scanned will be:
 \begin{equation*}
 \begin{aligned}
-\text{Number of elements scanned} &= \text{Sum of numbers $1$ through $n$} -\text{Sum of numbers $1$ though $n-\sqrt{n}$} \\
+\text{Number of elements scanned} &= (\text{Sum of numbers $1$ through $n$}) -(\text{Sum of numbers $1$ though $n-\sqrt{n}$}) \\
 &= \frac{n(n+1)}{2}-\frac{(n-\sqrt{n})(n-\sqrt{n}+1)}{2}\\
 &=\Theta(n\sqrt(n))\\
-&= \Theta(n^{\frac{3}{2}})
+&= \Theta(n^{\frac{3}{2}})\text{, which is the time taken by the algorithm}
 \end{aligned}
 \end{equation*}
 
 \end{parts}
 
+\color{qcolor}
 \titledquestion{Pecking orders}
 ({\em Source:} Jeff Erickson's exercises)\\
 Whenever groups of pigeons gather, they instinctively establish a pecking order. For any pair of pigeons, one pigeon always pecks the other, driving it away from food or potential mates. The same pair of pigeons always chooses the same pecking order, even after years of separation, no matter what other pigeons are around. Surprisingly, the overall pecking order can contain cycles -- for example, pigeon $A$ pecks pigeon $B$, which pecks pigeon $C$, which pecks pigeon $A$. 
@@ -197,6 +200,741 @@ Whenever groups of pigeons gather, they instinctively establish a pecking order.
 \part[5] Suppose you are given a directed graph representing the pecking relationships among a set of $n$ pigeons. The graph contains one vertex per pigeon, and it contains an edge $i \rightarrow j$ if and only if pigeon $i$ pecks pigeon $j$. Describe and analyze an algorithm to compute a pecking order for the pigeons, as guaranteed by part (a). Your algorithm should run in time polynomial in $n$.
 \end{parts}
 
+\color{acolor}
+If we pick any two pigeons, they can be arranged left to right so that a pigeon pecks the pigeon immediately to its left. This is shown below for pigeons $a$ and $b$ with the arrow pointing to the pigeon being pecked.
+
+\begin{center}
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 1.5cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (a) [right of=b] {$a$};
+
+        \path[->] (a) edge node {} (b);
+
+  \end{tikzpicture}
+\end{center}
+
+The third pigeon (shown as pigeon $x$) that needs to be inserted into the row will have one of the four relationships with the two pigeons (shown as $a$ and $b$) in the list:
+
+\begin{center}
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 2cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (x) [above right of=b] {$x$};
+        \node[state] (a) [right of=b] {$a$};
+
+        \path[->] (x) edge node {} (b);
+        \path[->] (x) edge node {} (a);
+        \path[->] (a) edge node {} (b);
+
+  \end{tikzpicture}
+  \qquad
+ \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 2cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (x) [above right of=b] {$x$};
+        \node[state] (a) [right of=b] {$a$};
+
+        \path[->] (x) edge node {} (b);
+        \path[->] (a) edge node {} (x);
+        \path[->] (a) edge node {} (b);
+
+  \end{tikzpicture}
+  \qquad
+ \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 2cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (x) [above right of=b] {$x$};
+        \node[state] (a) [right of=b] {$a$};
+
+        \path[->] (b) edge node {} (x);
+        \path[->] (x) edge node {} (a);
+        \path[->] (a) edge node {} (b);
+
+  \end{tikzpicture}
+  \qquad
+ \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 2cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (x) [above right of=b] {$x$};
+        \node[state] (a) [right of=b] {$a$};
+
+        \path[->] (b) edge node {} (x);
+        \path[->] (a) edge node {} (x);
+        \path[->] (a) edge node {} (b);
+
+  \end{tikzpicture}
+\end{center}
+
+For each of these four cases, the new pigeon can be inserted into the row as shown below.
+
+\begin{center}
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 1.25cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (x) [right of=a] {$x$};
+
+        \path[->] (a) edge node {} (b);
+        \path[->] (x) edge node {} (a);
+
+  \end{tikzpicture}
+  \qquad
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 1.25cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (x) [right of=b] {$x$};
+        \node[state] (a) [right of=x] {$a$};
+
+        \path[->] (x) edge node {} (b);
+        \path[->] (a) edge node {} (x);
+
+  \end{tikzpicture}
+  \qquad
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 1.25cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (x) [right of=a] {$x$};
+
+        \path[->] (a) edge node {} (b);
+        \path[->] (x) edge node {} (a);
+
+  \end{tikzpicture}
+  \qquad
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 1.25cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (x) {$x$};
+        \node[state] (b) [right of=x] {$b$};
+        \node[state] (a) [right of=b] {$a$};
+
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (x);
+
+  \end{tikzpicture}
+\end{center}
+
+As a general rule, every pigeon that needs to be inserted into the pecking order list, can be inserted before the first pigeon it pecks, starting from the rightmost pigeon already in the list. In the case where the pigeon that needs to be inserted into the pecking order list is pecked by every pigeon in the list, the pigeon can be inserted at the end of the list. This is shown below for pigeon $y$ being inserted into a list of three pigeons $a$, $b$ and $c$ and also for a list of four pigeons $a$, $b$, $c$ and $d$. The rule however will hold for any pecking order list size.
+
+\begin{center}
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 1.25cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (y) [above of=b] {$y$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (c) [left of=b] {$c$};
+
+        \path[->] (y) edge node {} (a);
+        \path[->] (y) edge node {} (b);
+        \path[->] (y) edge node {} (c);
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+
+  \end{tikzpicture}
+  \qquad
+ \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 1.25cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (y) [above of=b] {$y$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (c) [left of=b] {$c$};
+
+        \path[->] (a) edge node {} (y);
+        \path[->] (y) edge node {} (b);
+        \path[->] (y) edge node {} (c);
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+
+  \end{tikzpicture}
+  \qquad
+ \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 1.25cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (y) [above of=b] {$y$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (c) [left of=b] {$c$};
+
+        \path[->] (y) edge node {} (a);
+        \path[->] (b) edge node {} (y);
+        \path[->] (y) edge node {} (c);
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+
+  \end{tikzpicture}
+  \qquad
+ \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 1.25cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (y) [above of=b] {$y$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (c) [left of=b] {$c$};
+
+        \path[->] (a) edge node {} (y);
+        \path[->] (b) edge node {} (y);
+        \path[->] (y) edge node {} (c);
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+
+  \end{tikzpicture}
+\end{center}
+
+
+\begin{center}
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            auto,
+            node distance = 0.85cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (c) [left of=b] {$c$};
+        \node[state] (y) [right of=a] {$y$};
+
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+        \path[->] (y) edge node {} (a);
+
+  \end{tikzpicture}
+  \qquad
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            auto,
+            node distance = 0.85cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (y) [right of=b] {$y$};
+        \node[state] (c) [left of=b] {$c$};
+        \node[state] (a) [right of=y] {$a$};
+
+        \path[->] (y) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+        \path[->] (a) edge node {} (y);
+
+  \end{tikzpicture}
+  \qquad
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            auto,
+            node distance = 0.85cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (c) [left of=b] {$c$};
+        \node[state] (y) [right of=a] {$y$};
+
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+        \path[->] (y) edge node {} (a);
+
+  \end{tikzpicture}
+  \qquad
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            auto,
+            node distance = 0.85cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (y) [left of=b] {$y$};
+        \node[state] (c) [left of=y] {$c$};
+
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (y);
+        \path[->] (y) edge node {} (c);
+
+  \end{tikzpicture}
+\end{center}
+
+\begin{center}
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 1.25cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (y) [above of=b] {$y$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (c) [left of=b] {$c$};
+
+        \path[->] (y) edge node {} (a);
+        \path[->] (y) edge node {} (b);
+        \path[->] (c) edge node {} (y);
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+
+  \end{tikzpicture}
+  \qquad
+ \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 1.25cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (y) [above of=b] {$y$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (c) [left of=b] {$c$};
+
+        \path[->] (a) edge node {} (y);
+        \path[->] (y) edge node {} (b);
+        \path[->] (c) edge node {} (y);
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+
+  \end{tikzpicture}
+  \qquad
+ \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 1.25cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (y) [above of=b] {$y$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (c) [left of=b] {$c$};
+
+        \path[->] (y) edge node {} (a);
+        \path[->] (b) edge node {} (y);
+        \path[->] (c) edge node {} (y);
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+
+  \end{tikzpicture}
+\end{center}
+
+
+\begin{center}
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            auto,
+            node distance = 0.85cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (c) [left of=b] {$c$};
+        \node[state] (y) [right of=a] {$y$};
+
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+        \path[->] (y) edge node {} (a);
+
+  \end{tikzpicture}
+  \qquad
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            auto,
+            node distance = 0.85cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (y) [right of=b] {$y$};
+        \node[state] (c) [left of=b] {$c$};
+        \node[state] (a) [right of=y] {$a$};
+
+        \path[->] (y) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+        \path[->] (a) edge node {} (y);
+
+  \end{tikzpicture}
+  \qquad
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            auto,
+            node distance = 0.85cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (c) [left of=b] {$c$};
+        \node[state] (y) [right of=a] {$y$};
+
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+        \path[->] (y) edge node {} (a);
+
+  \end{tikzpicture}
+\end{center}
+
+\begin{center}
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 1.25cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (y) [above of=b] {$y$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (c) [left of=b] {$c$};
+        \node[state] (d) [left of=c] {$d$};
+
+        \path[->] (a) edge node {} (y);
+        \path[->] (b) edge node {} (y);
+        \path[->] (c) edge node {} (y);
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+        \path[->] (c) edge node {} (d);
+        \path[->] (y) edge node {} (d);
+
+  \end{tikzpicture}
+  \qquad
+ \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            shorten > = 1pt, % don't touch arrow head to node
+            auto,
+            node distance = 1.25cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (y) [above of=b] {$y$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (c) [left of=b] {$c$};
+        \node[state] (d) [left of=c] {$d$};
+
+        \path[->] (a) edge node {} (y);
+        \path[->] (b) edge node {} (y);
+        \path[->] (c) edge node {} (y);
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+        \path[->] (c) edge node {} (d);
+        \path[->] (d) edge node {} (y);
+
+  \end{tikzpicture}
+\end{center}
+
+
+\begin{center}
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            auto,
+            node distance = 0.85cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (c) [left of=b] {$c$};
+        \node[state] (y) [left of=c] {$y$};
+        \node[state] (d) [left of=y] {$d$};
+
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+        \path[->] (c) edge node {} (y);
+        \path[->] (y) edge node {} (d);
+
+  \end{tikzpicture}
+  \qquad
+  \begin{tikzpicture}[
+            > = stealth, % arrow head style
+            auto,
+            node distance = 0.85cm, % distance between nodes
+            semithick % line style
+        ]
+
+        \tikzstyle{every state}=[
+            draw = black,
+            thick,
+            fill = white,
+            minimum size = 4mm
+        ]
+
+        \node[state] (b) {$b$};
+        \node[state] (a) [right of=b] {$a$};
+        \node[state] (c) [left of=b] {$c$};
+        \node[state] (d) [left of=c] {$d$};
+        \node[state] (y) [left of=d] {$y$};
+
+        \path[->] (a) edge node {} (b);
+        \path[->] (b) edge node {} (c);
+        \path[->] (c) edge node {} (d);
+        \path[->] (d) edge node {} (y);
+
+  \end{tikzpicture}
+\end{center}
+\color{qcolor}
 \titledquestion{More divide, better run time}
 {\em Moral:} as long as the ``conquer'' step is not too expensive, dividing a problem into smaller sub-problems typically helps. 
 
