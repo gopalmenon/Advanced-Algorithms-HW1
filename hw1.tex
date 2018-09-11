@@ -110,9 +110,9 @@ T(n) &= 2T(\sqrt{n}) +4\\
 \text{Let }T(2^x) &= P(x)\\
 P(x)&=2P \left (\frac{x}{2} \right ) + 4\\
 &= 2P \left (\frac{x}{2} \right ) + O(1)\\
-&= \Theta(\log(x))  \text{, using the Master Theorem \cite{CLRS} case 2, since $a=2$, $b=2$, $f(n) = \Theta(1) = \Theta (n^{log_b a})$}\\
-T(n) &= O(\log(x))\\
-&= O(\log(\log n))\\
+&= \Theta(\log(x))  \text{, using the Master Theorem \cite{CLRS} case 1, since $a=2$, $b=2$, $f(n) = O(1) = O(n^{log_b a-1})$}\\
+P(x) &= \Theta(x)\\
+&= \Theta(\log n))\\
 \end{aligned}
 \end{equation*}
 
