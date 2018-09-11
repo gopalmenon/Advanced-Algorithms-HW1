@@ -145,7 +145,7 @@ Using the Master Theorem, $a=3$, $b=2$, $log_b a = log_2 3 =1.585$\\
 $f(n) = g(n) = n^{1.8} = \Omega(n^{1.8})=\Omega(n^{log_b a + \epsilon})$\\
 $af(\frac{n}{b}) = 3\left ( \frac{n}{2} \right ) ^{1.8}=0.8615n^{1.8}$\\
 $cf(n) = cn^{1.8}$\\
-When $c=1$, $af(\frac{n}{b}) \leq cf(n)$\\
+When $c=0.9$, $af(\frac{n}{b}) \leq cf(n)$\\
 So by the Master Theorem, $T(n) = \Theta(n^{1.8})$\\
 
 If we reduce $g(n)$ to $n^{1.5}$\\
@@ -156,7 +156,7 @@ So it does make sense to reduce $g(n)$ to $n^{1.5}$\\
 If we reduce $g(n)$ to $n \log n$\\
 $g(n)= n\log n$ is upper bounded by $n^{log_b a} = n^{log_2 3} =n^{1.585}$, since $\log n$ is upper bounded by $n^{0.585}$.\\
 So we can find an $\epsilon > 0$ such that $g(n) =O(n^{\log_b a-\epsilon})$.
-So by case 1 of the Master Method, $T(n) = O(n{\log_b a}) = O(n^{1.585})$.
+So by case 1 of the Master Method, $T(n) = \Theta(n^{\log_b a}) = \Theta(n^{1.585})$.
 This does not give us an advantage over when $g(n)=n^{1.5}$.
 \end{parts}
 
@@ -175,11 +175,11 @@ Recall the bubble sort algorithm (pseudocode at {\sf http://en.wikipedia.org/wik
 \begin{aligned}
 A &= \{21, 27,33,56,65,77,79,83,88,101,95\} \text{, is the initial state of the array}\\
 A &= \{21, 27,33,56,65,77,79,83,88,95,101\} \text{, state of the array after last two elements have been swapped}\\
-A &= \{21, 27,33,56,65,77,79,83,88,95,101\} \text{, unchanged state of the array after ino more swaps are needed}\\
+A &= \{21, 27,33,56,65,77,79,83,88,95,101\} \text{, unchanged state of the array after no more swaps are needed}\\
 \end{aligned}
 \end{equation*}
 
-\part Consider the case on an array with $n$ elements where the entire array except the last $\sqrt{n}$ elements are sorted and the last $\sqrt{n}$ elements are larger than then elements before them. The bubble sort algorithm will first scan the entire array and swap required elements in the last $\sqrt{n}$ part. Then it will scan the array up to the last but one element, then up to the last but two elements, and so on till element number $n-\sqrt{n}$. It will then stop. The number of elements scanned will be:
+\part Consider the case on an array with $n$ elements where the entire array except the last $\sqrt{n}$ elements are sorted and the last $\sqrt{n}$ elements are larger than the elements before them. The bubble sort algorithm will first scan the entire array and swap required elements in the last $\sqrt{n}$ part. Then it will scan the array up to the last but one element, then up to the last but two elements, and so on till element number $n-\sqrt{n}$. It will then stop. The number of elements scanned will be:
 \begin{equation*}
 \begin{aligned}
 \text{Number of elements scanned} &= (\text{Sum of numbers $1$ through $n$}) -(\text{Sum of numbers $1$ though $n-\sqrt{n}$}) \\
