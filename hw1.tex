@@ -996,6 +996,27 @@ Suppose we have two $n$-digit integers $A, B$. Split $A$ into $A_1$,  $A_2$ and 
 These observations let us conclude that $T(n) = 5 T(n/3) + O(n)$, which results in an overall run time of $O(n^{1.464..})$, which is better than Karatsuba's algorithm. (This can be pushed further, to obtain $n^{1+\epsilon}$, for any constant $\epsilon >0$.)
 \end{parts}
 
+\color{acolor}
+
+\begin{parts}
+
+\part \begin{equation*}
+\begin{aligned}
+A &= 10^{\frac{2n}{3}} A_1 + 10^{\frac{n}{3}} A_2 +  A_3\\\
+&= A_1 z^2 + A_2 z +  A_3 \text{, when $z=10^{\frac{n}{3}}$}\\
+B &= 10^{\frac{2n}{3}} B_1 + 10^{\frac{n}{3}} B_2 + B_3\\
+&= B_1 z^2 + B_2 z +  B_3 \text{, when $z=10^{\frac{n}{3}}$}\\
+\Rightarrow A \times B &= p(z)q(z) \text{, when $z=10^{\frac{n}{3}}$}\\
+&= r(z) \text{, when $z=10^{\frac{n}{3}}$}\\
+&= r(10^{n/3})
+\end{aligned}
+\end{equation*}
+
+\part Once we know each $C_i$, if each of these is $O(n)$ digits each, we can find $r(10^{n/3})$ by shifting each $C_i$ to the left by $\frac{n}{3}$ times the power of the associated $z$ term and then adding all the terms. The total amount of work involved in shifting will be $ \frac{n}{3} + \frac{2n}{3} + \frac{3n}{3} + \frac{4n}{3} = \frac{10n}{3}$. The work of adding the $5$ terms will be $4\times\frac{5n}{3}$, since we need to add $5$ numbers the longest of which is $\frac{5n}{3}$ digits. So the total time for finding $r(10^{n/3})$ will be $O(n)$.
+
+\part 
+
+\end{parts}
 
 \end{questions}
 
