@@ -976,6 +976,9 @@ This is shown below for pigeon $y$ being inserted into a list of three pigeons $
 
 \end{parts}
 
+\textbf{Analysys of algorithm time complexity:}
+Let $n$ be the total number of pigeons. The $while$ loop will execute $n$ times. The worst case for the step of looking for the first node in the list that is pecked by the new node will look through every node in the list. This will go through $1$ node the first time around, $2$ nodes the second time around and $n-1$ nodes when the last new node is added. So this step will take a total of $O(n^2)$ time. Every other step will take constant time. So the entire algorithm will run in $O(n^2)$ time.
+
 \color{qcolor}
 \titledquestion{More divide, better run time}
 {\em Moral:} as long as the ``conquer'' step is not too expensive, dividing a problem into smaller sub-problems typically helps. 
