@@ -1014,7 +1014,34 @@ B &= 10^{\frac{2n}{3}} B_1 + 10^{\frac{n}{3}} B_2 + B_3\\
 
 \part Once we know each $C_i$, if each of these is $O(n)$ digits each, we can find $r(10^{n/3})$ by shifting each $C_i$ to the left by $\frac{n}{3}$ times the power of the associated $z$ term and then adding all the terms. The total amount of work involved in shifting will be $ \frac{n}{3} + \frac{2n}{3} + \frac{3n}{3} + \frac{4n}{3} = \frac{10n}{3}$. The work of adding the $5$ terms will be $4\times\frac{5n}{3}$, since we need to add $5$ numbers the longest of which is $\frac{5n}{3}$ digits. So the total time for finding $r(10^{n/3})$ will be $O(n)$.
 
-\part 
+\part \begin{equation*}
+\begin{aligned}
+r(2) =p(2)q(2)=(4A1+2A2+A3)(4B1+2B2+B3)
+\end{aligned}
+\end{equation*}
+$r(1)$, $r(0)$, $r(-1)$ and $r(-2)$ can be written out similarly. 4 times a binary number is just the number shifted left two times and 2 times a binary number is just the number shifted left once. The additions before multiplying the two terms in each $r(z)$ can be done in $O(n)$ time. Then we would need to multiply two $n/3$ digit numbers. There may be an extra digit due to the multiplication by $4$, $2$ or because of the addition. However on the average, each $r(z)$ can be computed in time $T(n/3) + O(n)$, where $T(n/3)$ is the time needed to multiply two $n/3$ digit numbers.
+
+Once we find the $r(z)$ vales for $z \in \{-2, -1, 0, 1, 2\}$, we can construct $5$ equations in the $C_i$'s. For example, corresponding to $z=2$, we have the following equation:
+$$
+16C_1 + 8C_2+4C_3+2C_4+C_5 = r(2)
+$$
+Since we will have a total of $5$ $r(z)$ values, we can construct $5$ equations of the form shown above in the $5$ $C_i$ variables. This will enable us to solve the $5$ equations in $5$ variables to uniquely determine the $C_i$ values.
+
+\part \begin{equation*}
+\begin{aligned}
+16C_1 + 8C_2+4C_3+2C_4+C_5 &= r(2)\\
+C_1 + C_2+C_3+C_4+C_5&= r(1)\\
+C_5&= r(0)\\
+C_1 -C_2+C_3-C_4+C_5&= r(-1)\\
+16C_1 - 8C_2+4C_3-2C_4+C_5 &= r(-2)
+\end{aligned}
+\end{equation*}
+
+If we add the first and last equations, we get one equation in $C_1$ and $C_3$ since $C_2$ and $C_4$ get eliminated and $C_5$ is given by the third equation. We can get another equation in $C_1$ and $C_3$ by adding the second and fourth equations. Each of these steps will take $O(n)$ time. We can now solve two equations in $C_1$ and $C_3$ by subtracting the equations after multiplying them by the relevant constant. Once we know $C_1$ and $C_3$, we can get two equations in $C_2$ and $C_4$ with can also similarly solved in $O(n)$ time. So the equations can be solved to obtain $C_i$ in $O(n)$ time.
+
+These observations above lead us to conclude that two $n$ digit numbers can be multiplied in $T(n) = 5 \times \text{time for each $r(z)$} + \text{$O(n)$ time for solving each $C_i$} =5 T(n/3) + O(n)$ time.
+
+According to the Master Theorem, $a=5$, $b=3$ and $\log_b a = \log_3 5 = 1.464..$. Since $f(n) = O(n)$, this corresponds to case 1 of the Master Theorem and so $T(n) = \Theta(n^{1.464..})$, or  $T(n) =O(n^{1.464..})$.
 
 \end{parts}
 
